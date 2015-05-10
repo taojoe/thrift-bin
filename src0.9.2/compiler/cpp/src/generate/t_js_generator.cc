@@ -408,7 +408,7 @@ string t_js_generator::render_includes() {
   if (gen_node_) {
     const vector<t_program*>& includes = program_->get_includes();
     for (size_t i = 0; i < includes.size(); ++i) {
-      result += "var " + includes[i]->get_name() + "_ttypes = require('./" + includes[i]->get_name() + "_types')\n";
+        result += "var " + includes[i]->get_name() + "_ttypes = require('../" + includes[i]->get_name() + "/" + includes[i]->get_name() + "_types')\n"; //生成的目标文件根据thrift在不同的目录, by joe
     }
     if (includes.size() > 0) {
       result += "\n";
@@ -646,12 +646,12 @@ void t_js_generator::generate_js_struct_definition(ofstream& out,
   if (gen_node_) {
     if (is_exported) {
         out <<
-            "var " <<  // make it strict mode
+            "var " <<  // make it strict mode, by joe
             js_namespace(tstruct->get_program()) << tstruct->get_name() << " = " <<
         "module.exports." << tstruct->get_name() << " = function(args) {" << endl;
     } else {
         out <<
-            "var " << //make it strict mode
+            "var " << //make it strict mode, by joe
             js_namespace(tstruct->get_program()) << tstruct->get_name() << " = function(args) {" << endl;
     }
   } else {
@@ -921,7 +921,7 @@ void t_js_generator::generate_service(t_service* tservice) {
       if (tservice->get_extends() != NULL) {
         f_service_ <<
           "var " << tservice->get_extends()->get_name() <<
-          " = require('./" << tservice->get_extends()->get_name() << "')" << endl <<
+            " = require('../" << tservice->get_extends()->get_program()->get_name() << "/" << tservice->get_extends()->get_name() << "')" << endl <<         //生成的目标文件根据thrift在不同的目录, by joe
           "var " << tservice->get_extends()->get_name() << "Client = " <<
           tservice->get_extends()->get_name() << ".Client" << endl <<
           "var " << tservice->get_extends()->get_name() << "Processor = " <<
@@ -959,7 +959,7 @@ void t_js_generator::generate_service_processor(t_service* tservice) {
     vector<t_function*>::iterator f_iter;
 
     f_service_ <<
-        "var " << // make it strict mode
+        "var " << // make it strict mode, by joe
         js_namespace(tservice->get_program()) << service_name_ << "Processor = " <<
         "exports.Processor = function(handler) ";
 
@@ -1184,7 +1184,7 @@ void t_js_generator::generate_service_rest(t_service* tservice) {
 void t_js_generator::generate_service_client(t_service* tservice) {
   if (gen_node_) {
     f_service_ <<
-        "var " << // make it strict mode
+        "var " << // make it strict mode, by joe
         js_namespace(tservice->get_program()) << service_name_ << "Client = " <<
         "exports.Client = function(output, pClass) {"<<endl;
   } else {
